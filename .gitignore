@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+
+# JSON veri
+data/users.json
+
+# Gizli bilgiler
+.env
+
+# Sistem dosyaları
+.DS_Store
