@@ -1,4 +1,4 @@
-import json
+import sqlite3
 from collections import Counter
 
 async def admin_panel(update, context, ADMIN_ID):
@@ -6,58 +6,118 @@ async def admin_panel(update, context, ADMIN_ID):
     if update.effective_user.id != ADMIN_ID:
         return
 
-    try:
-        with open("data/users.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-    except:
-        data = {}
+    # 👥 Toplam kullanıcı
+    cursor.execute("""
 
-    toplam_kullanici = len(data)
+    SELECT COUNT(*)
+    FROM users
 
-    toplam_kullanim = 0
-    favorisi_olan = 0
+    """)
+
+    toplam_kullanici = cursor.fetchone()[0]
+
+    # 📊 Toplam kullanım
+    cursor.execute("""
+
+    SELECT SUM(kullanim)
+    FROM users
+
+    """)
+
+    toplam_kullanim = cursor.fetchone()[0]
+
+    if toplam_kullanim is None:
+        toplam_kullanim = 0
+
+    # ⭐ Favorisi olan kullanıcı
+    cursor.execute("""
+
+    SELECT COUNT(*)
+    FROM users
+
+    WHERE favori IS NOT NULL
+
+    """)
+
+    favorisi_olan = cursor.fetchone()[0]
+
+    # 🧑 Kullanıcılar
+    cursor.execute("""
+
+    SELECT isim
+    FROM users
+
+    """)
+
+    users = cursor.fetchall()
 
     kullanici_listesi = []
 
-    en_aktif_isim = "Yok"
-    en_aktif_kullanim = 0
-
-    son_aktif = ""
-
-    favoriler = []
-
-    for user in data.values():
-
-        kullanim = user.get("kullanim", 0)
-
-        toplam_kullanim += kullanim
-
-        favori = user.get("favori")
-
-        if favori:
-            favorisi_olan += 1
-            favoriler.append(favori)
-
-        isim = user.get("isim", "Bilinmiyor")
-
-        kullanici_listesi.append(
-            f"• {isim}"
-        )
-
-        # 🏆 EN AKTİF KULLANICI
-        if kullanim > en_aktif_kullanim:
-            en_aktif_kullanim = kullanim
-            en_aktif_isim = isim
-
-        # 🕒 SON GİRİŞ
-        tarih = user.get("son_giris", "Yok")
-
-        son_aktif += f"• {isim} → {tarih}\n"
+    for user in users:
+        kullanici_listesi.append(f"• {user[0]}")
 
     kullanicilar = "\n".join(kullanici_listesi)
 
-    # 🍔 EN POPÜLER YEMEK
+    # 🏆 En aktif kullanıcı
+    cursor.execute("""
+
+    SELECT isim, kullanim
+    FROM users
+
+    ORDER BY kullanim DESC
+    LIMIT 1
+
+    """)
+
+    aktif = cursor.fetchone()
+
+    if aktif:
+        en_aktif_isim = aktif[0]
+        en_aktif_kullanim = aktif[1]
+
+    else:
+        en_aktif_isim = "Yok"
+        en_aktif_kullanim = 0
+
+    # 🕒 Son aktif kullanıcılar
+    cursor.execute("""
+
+    SELECT isim, son_giris
+    FROM users
+
+    """)
+
+    aktifler = cursor.fetchall()
+
+    son_aktif = ""
+
+    for user in aktifler:
+
+        isim = user[0]
+        tarih = user[1]
+
+        son_aktif += f"• {isim} → {tarih}\n"
+
+    # 🍔 En popüler yemek
+    cursor.execute("""
+
+    SELECT favori
+    FROM users
+
+    WHERE favori IS NOT NULL
+
+    """)
+
+    yemekler = cursor.fetchall()
+
+    favoriler = []
+
+    for yemek in yemekler:
+        favoriler.append(yemek[0])
+
     if favoriler:
 
         sayac = Counter(favoriler)
@@ -66,6 +126,8 @@ async def admin_panel(update, context, ADMIN_ID):
 
     else:
         populer_yemek = "Yok"
+
+    conn.close()
 
     mesaj = (
         f"👑 Admin Panel\n\n"

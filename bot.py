@@ -2,6 +2,7 @@ import json
 import os
 import requests
 import random
+import sqlite3
 
 from datetime import datetime
 from dotenv import load_dotenv
@@ -41,56 +42,94 @@ ADMIN_ID = 8547388845
 # 👤 KULLANICI KAYDET
 def kullanici_kaydet(user):
 
-    dosya = "data/users.json"
-
-    if not os.path.exists(dosya):
-        with open(dosya, "w", encoding="utf-8") as f:
-            json.dump({}, f)
-
-    try:
-        with open(dosya, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-    except:
-        data = {}
-
     user_id = str(user.id)
+    isim = user.first_name
 
     tarih = datetime.now().strftime("%d.%m.%Y %H:%M")
 
-    if user_id not in data:
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-        data[user_id] = {
-            "isim": user.first_name,
-            "kullanim": 1,
-            "favori": None,
-            "son_giris": tarih
-        }
+    cursor.execute("""
+
+    CREATE TABLE IF NOT EXISTS users (
+
+        user_id TEXT PRIMARY KEY,
+        isim TEXT,
+        kullanim INTEGER,
+        favori TEXT,
+        son_giris TEXT
+
+    )
+
+    """)
+
+    cursor.execute("""
+
+    SELECT * FROM users
+    WHERE user_id = ?
+
+    """, (user_id,))
+
+    mevcut = cursor.fetchone()
+
+    if mevcut is None:
+
+        cursor.execute("""
+
+        INSERT INTO users
+        (user_id, isim, kullanim, favori, son_giris)
+
+        VALUES (?, ?, ?, ?, ?)
+
+        """, (
+            user_id,
+            isim,
+            1,
+            None,
+            tarih
+        ))
 
     else:
 
-        data[user_id]["kullanim"] += 1
-        data[user_id]["son_giris"] = tarih
+        kullanim = mevcut[2] + 1
 
-    with open(dosya, "w", encoding="utf-8") as f:
-        json.dump(
-            data,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+        cursor.execute("""
+
+        UPDATE users
+
+        SET kullanim = ?,
+            son_giris = ?
+
+        WHERE user_id = ?
+
+        """, (
+            kullanim,
+            tarih,
+            user_id
+        ))
+
+    conn.commit()
+    conn.close()
 
 # 📊 KULLANICI SAYISI
 def kullanici_sayisi():
 
-    try:
-        with open("data/users.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-        return len(data)
+    cursor.execute("""
 
-    except:
-        return 0
+    SELECT COUNT(*)
+    FROM users
+
+    """)
+
+    toplam = cursor.fetchone()[0]
+
+    conn.close()
+
+    return toplam
 
 # 🆔 ID
 async def id(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -125,21 +164,27 @@ async def duyuru(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         return
 
-    try:
-        with open("data/users.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-    except:
-        data = {}
+    cursor.execute("""
+
+    SELECT user_id FROM users
+
+    """)
+
+    users = cursor.fetchall()
+
+    conn.close()
 
     basarili = 0
 
-    for user_id in data.keys():
+    for user in users:
 
         try:
 
             await context.bot.send_message(
-                chat_id=int(user_id),
+                chat_id=int(user[0]),
                 text=f"📢 Duyuru:\n\n{mesaj}"
             )
 

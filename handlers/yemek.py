@@ -1,4 +1,4 @@
-import json
+import sqlite3
 import random
 
 from telegram import (
@@ -47,32 +47,24 @@ async def favori_kaydet(query, user_id):
 
     yemek = query.data.replace("fav_", "")
 
-    try:
-        with open("data/users.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-    except:
-        data = {}
+    cursor.execute("""
 
-    # 👤 kullanıcı yoksa oluştur
-    if user_id not in data:
+    UPDATE users
 
-        data[user_id] = {
-            "isim": query.from_user.first_name,
-            "kullanim": 1,
-            "favori": yemek
-        }
+    SET favori = ?
 
-    else:
-        data[user_id]["favori"] = yemek
+    WHERE user_id = ?
 
-    with open("data/users.json", "w", encoding="utf-8") as f:
-        json.dump(
-            data,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+    """, (
+        yemek,
+        user_id
+    ))
+
+    conn.commit()
+    conn.close()
 
     await query.message.reply_text(
         f"Favorin kaydedildi: {yemek}",
@@ -82,28 +74,26 @@ async def favori_kaydet(query, user_id):
 # 📋 FAVORİ GÖSTER
 async def favori_goster(query, user_id):
 
-    try:
-        with open("data/users.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
-    except:
-        data = {}
+    cursor.execute("""
 
-    if user_id not in data:
+    SELECT favori
+    FROM users
 
-        await query.message.reply_text(
-            "Henüz favorin yok ❌",
-            reply_markup=geri_btn()
-        )
+    WHERE user_id = ?
 
-        return
+    """, (user_id,))
 
-    fav = data[user_id].get("favori")
+    sonuc = cursor.fetchone()
 
-    if fav:
+    conn.close()
+
+    if sonuc and sonuc[0]:
 
         await query.message.reply_text(
-            f"Favorin: {fav}",
+            f"Favorin: {sonuc[0]}",
             reply_markup=geri_btn()
         )
 
