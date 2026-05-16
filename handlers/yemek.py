@@ -47,13 +47,32 @@ async def favori_kaydet(query, user_id):
 
     yemek = query.data.replace("fav_", "")
 
-    with open("data/users.json", "r") as f:
-        data = json.load(f)
+    try:
+        with open("data/users.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-    data[user_id]["favori"] = yemek
+    except:
+        data = {}
 
-    with open("data/users.json", "w") as f:
-        json.dump(data, f, indent=4)
+    # 👤 kullanıcı yoksa oluştur
+    if user_id not in data:
+
+        data[user_id] = {
+            "isim": query.from_user.first_name,
+            "kullanim": 1,
+            "favori": yemek
+        }
+
+    else:
+        data[user_id]["favori"] = yemek
+
+    with open("data/users.json", "w", encoding="utf-8") as f:
+        json.dump(
+            data,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
 
     await query.message.reply_text(
         f"Favorin kaydedildi: {yemek}",
@@ -63,18 +82,33 @@ async def favori_kaydet(query, user_id):
 # 📋 FAVORİ GÖSTER
 async def favori_goster(query, user_id):
 
-    with open("data/users.json", "r") as f:
-        data = json.load(f)
+    try:
+        with open("data/users.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+    except:
+        data = {}
+
+    if user_id not in data:
+
+        await query.message.reply_text(
+            "Henüz favorin yok ❌",
+            reply_markup=geri_btn()
+        )
+
+        return
 
     fav = data[user_id].get("favori")
 
     if fav:
+
         await query.message.reply_text(
             f"Favorin: {fav}",
             reply_markup=geri_btn()
         )
 
     else:
+
         await query.message.reply_text(
             "Henüz favorin yok ❌",
             reply_markup=geri_btn()

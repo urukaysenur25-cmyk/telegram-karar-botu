@@ -9,9 +9,9 @@ def ana_menu():
         [InlineKeyboardButton("🍔 Bugün Ne Yesem?", callback_data="yemek")],
         [InlineKeyboardButton("⭐ Favori Yemeğim", callback_data="favori_goster")],
         [InlineKeyboardButton("🌍 Hava Durumuna Bak", callback_data="hava")],
-        [InlineKeyboardButton("🎲 Sürpriz Karar", callback_data="surpriz")]
+        [InlineKeyboardButton("🎲 Sürpriz Karar", callback_data="surpriz")],
+        [InlineKeyboardButton("🧠 AI Tavsiye", callback_data="ai")]
     ])
-
 
 # ⬅️ GERİ
 def geri_btn():
