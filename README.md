@@ -2,40 +2,46 @@
 
 Bu bot, kullanıcıların günlük hayatta karar vermesine yardımcı olmak için geliştirilmiştir.
 
+Modern arayüzü, AI destekli tavsiye sistemi, kullanıcı profilleri ve admin paneli sayesinde gelişmiş bir Telegram asistanı olarak çalışır.
+
 ---
 
-## 🚀 Özellikler
+# 🚀 Özellikler
 
-* 🧠 Karar veremeyenler için öneriler
-* 🎯 Rastgele aktivite seçimi
+* 🧠 AI destekli tavsiye sistemi
+* 🎯 Rastgele aktivite önerileri
 * ⚖️ İki seçenek arasında karar verme (A mı B mi)
-* 🍔 Yemek önerisi
-* ⭐ Favori yemek kaydetme sistemi
+* 🍔 Yemek öneri sistemi
+* ⭐ Favori yemek kaydetme
+* 👤 Kullanıcı profil sistemi
 * 🌍 Hava durumu sorgulama
-* 🎲 Sürpriz öneriler
-* 👑 Admin paneli
-* 📢 Duyuru sistemi
-* 🧠 AI tavsiye sistemi
+* 🎲 Sürpriz karar sistemi
+* 👑 Gelişmiş admin paneli
+* 📢 Tüm kullanıcılara duyuru sistemi
+* 🗄️ SQLite veritabanı sistemi
+* 🔒 Güvenli .env sistemi
+* 📊 Kullanıcı istatistikleri
+* 🧠 Buton destekli AI tavsiye sistemi
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+# 🛠️ Kullanılan Teknolojiler
 
 * Python
 * python-telegram-bot
+* SQLite3
 * OpenWeather API
-* JSON veri saklama
 * python-dotenv
 
 ---
 
-## 📦 Kurulum
+# 📦 Kurulum
 
 Projeyi bilgisayarına indir:
 
 ```bash
-git clone https://github.com/kullaniciadi/projeadi.git
-cd projeadi
+git clone https://github.com/urukaysenur25-cmyk/telegram-karar-botu.git
+cd telegram-karar-botu
 ```
 
 Gerekli kütüphaneleri yükle:
@@ -46,7 +52,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🔐 .env Dosyası
+# 🔐 .env Dosyası
 
 Proje klasörüne `.env` dosyası oluştur:
 
@@ -57,7 +63,7 @@ API_KEY=YOUR_API_KEY
 
 ---
 
-## ▶️ Çalıştırma
+# ▶️ Çalıştırma
 
 ```bash
 python bot.py
@@ -65,7 +71,7 @@ python bot.py
 
 ---
 
-## 📁 Proje Yapısı
+# 📁 Proje Yapısı
 
 ```text
 telegram_bot/
@@ -79,9 +85,6 @@ telegram_bot/
 ├── utils/
 │   ├── buttons.py
 │
-├── data/
-│   ├── users.json
-│
 ├── screenshots/
 │   ├── menu.jpeg
 │   ├── hava.jpeg
@@ -89,6 +92,7 @@ telegram_bot/
 │   ├── secim.jpeg
 │   ├── admin.jpeg
 │
+├── database.db
 ├── .env
 ├── .gitignore
 ├── requirements.txt
@@ -98,7 +102,42 @@ telegram_bot/
 
 ---
 
-## 🔐 Güvenlik
+# 👤 Kullanıcı Komutları
+
+| Komut | Açıklama |
+|---|---|
+| `/start` | Botu başlatır |
+| `/profil` | Kullanıcı profilini gösterir |
+| `/id` | Kullanıcı ID bilgisini gösterir |
+
+---
+
+# 👑 Admin Komutları
+
+| Komut | Açıklama |
+|---|---|
+| `/admin` | Admin panelini açar |
+| `/duyuru` | Tüm kullanıcılara mesaj gönderir |
+
+---
+
+# 🧠 AI Tavsiye Sistemi
+
+Bot kullanıcı ruh haline göre tavsiye verebilir.
+
+Örnek kategoriler:
+
+* 😢 Mutsuzum
+* 😰 Stresliyim
+* 😴 Yorgunum
+* 😒 Sıkıldım
+* ⚖️ Kararsızım
+* 😔 Yalnızım
+* 📚 Sınav stresim var
+
+---
+
+# 🔐 Güvenlik
 
 Bu projede güvenlik nedeniyle:
 
@@ -109,7 +148,7 @@ gibi gizli bilgiler `.env` dosyasında tutulmaktadır.
 
 ---
 
-## 👨‍💻 Geliştirici
+# 👨‍💻 Geliştirici
 
 Bu proje eğitim amaçlı geliştirilmiştir.
 
