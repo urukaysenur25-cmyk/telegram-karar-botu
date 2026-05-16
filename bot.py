@@ -1,4 +1,3 @@
-import json
 import os
 import requests
 import random
@@ -12,7 +11,6 @@ from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup
 )
-
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -138,6 +136,53 @@ async def id(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Senin ID: {update.effective_user.id}"
     )
 
+# 👤 PROFİL SİSTEMİ
+async def profil(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    user_id = str(update.effective_user.id)
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+
+    SELECT isim, kullanim, favori, son_giris
+    FROM users
+
+    WHERE user_id = ?
+
+    """, (user_id,))
+
+    user = cursor.fetchone()
+
+    conn.close()
+
+    if not user:
+
+        await update.message.reply_text(
+            "Profil bulunamadı ❌"
+        )
+
+        return
+
+    isim = user[0]
+    kullanim = user[1]
+    favori = user[2]
+    son_giris = user[3]
+
+    if favori is None:
+        favori = "Yok"
+
+    mesaj = (
+        f"👤 Profilin\n\n"
+        f"🧑 İsim: {isim}\n"
+        f"📈 Kullanım: {kullanim}\n"
+        f"⭐ Favori yemek: {favori}\n"
+        f"🕒 Son giriş: {son_giris}"
+    )
+
+    await update.message.reply_text(mesaj)
+
 # 🚀 START
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -169,7 +214,8 @@ async def duyuru(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     cursor.execute("""
 
-    SELECT user_id FROM users
+    SELECT user_id
+    FROM users
 
     """)
 
@@ -321,17 +367,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-    # 😢 MUTSUZ
     elif query.data == "ai_mutsuz":
 
         cevap = random.choice([
-
             "💙 Sevdiğin bir müzik açıp kısa yürüyüş yapabilirsin.",
             "🎬 Sevdiğin bir filmi açmak moralini düzeltebilir.",
             "☕ Bir kahve molası iyi gelebilir 😄",
             "💬 Yakın bir arkadaşınla konuşmak seni rahatlatabilir.",
             "🌙 Bazen dinlenmek her şeyden daha önemlidir."
-
         ])
 
         await query.message.reply_text(
@@ -339,17 +382,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # 😰 STRES
     elif query.data == "ai_stres":
 
         cevap = random.choice([
-
             "📚 25 dakikalık çalışma + kısa mola sistemi deneyebilirsin.",
             "🧘 Derin nefes almak ve kısa mola vermek iyi gelebilir.",
             "☕ Kısa bir kahve molası stresini azaltabilir.",
             "🎧 Sakin müzik açıp biraz rahatlamayı deneyebilirsin.",
             "🌿 Kısa yürüyüş yapmak zihnini toparlayabilir."
-
         ])
 
         await query.message.reply_text(
@@ -357,16 +397,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # 😴 YORGUN
     elif query.data == "ai_yorgun":
 
         cevap = random.choice([
-
             "😴 Biraz uyumak sana iyi gelebilir.",
             "☕ Enerji toplamak için kısa mola verebilirsin.",
             "🛌 Dinlenmek bazen en doğru karardır 😄",
             "🎵 Rahatlatıcı müzik eşliğinde dinlenebilirsin."
-
         ])
 
         await query.message.reply_text(
@@ -374,17 +411,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # 😒 SIKILDIM
     elif query.data == "ai_sikildim":
 
         cevap = random.choice([
-
             "🎮 Yeni bir oyun deneyebilirsin.",
             "🎬 Film veya dizi izlemek iyi gelebilir.",
             "📚 Yeni bir şey öğrenmeyi deneyebilirsin.",
             "🚶 Dışarı çıkıp kısa yürüyüş yapabilirsin.",
             "🎨 Yeni bir hobi denemeye ne dersin?"
-
         ])
 
         await query.message.reply_text(
@@ -392,16 +426,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # ⚖️ KARARSIZ
     elif query.data == "ai_kararsiz":
 
         cevap = random.choice([
-
             "⚖️ İçinden gelen ilk seçeneği denemek bazen en iyisidir 😄",
             "🎯 Seni en mutlu edecek seçeneği düşün.",
             "💡 Çok düşünmek yerine küçük adımla başlamayı dene.",
             "🚀 Risk almak bazen güzel sonuçlar doğurabilir."
-
         ])
 
         await query.message.reply_text(
@@ -409,16 +440,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # 😔 YALNIZ
     elif query.data == "ai_yalniz":
 
         cevap = random.choice([
-
             "💬 Bir arkadaşınla konuşmak iyi hissettirebilir.",
             "📱 Sevdiğin biriyle mesajlaşmayı deneyebilirsin.",
             "🌿 Dışarı çıkıp biraz hava almak iyi gelebilir.",
             "🎵 Müzik bazen insanın en iyi arkadaşı olabilir."
-
         ])
 
         await query.message.reply_text(
@@ -426,16 +454,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=geri_btn()
         )
 
-    # 📚 SINAV
     elif query.data == "ai_sinav":
 
         cevap = random.choice([
-
             "📚 Küçük hedeflerle çalışmak daha verimli olabilir.",
             "⏳ Pomodoro tekniğini deneyebilirsin.",
             "☕ Kısa mola sonrası çalışmak daha etkili olur.",
             "💪 Düzenli tekrar yapmak seni rahatlatır."
-
         ])
 
         await query.message.reply_text(
@@ -458,6 +483,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await favori_goster(query, user_id)
 
+    # 🌍 HAVA
     elif query.data == "hava":
 
         await query.message.reply_text(
@@ -467,6 +493,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         context.user_data["mod"] = "hava"
 
+    # 🎲 SÜRPRİZ
     elif query.data == "surpriz":
 
         secenekler = [
@@ -480,6 +507,23 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             random.choice(secenekler),
             reply_markup=geri_btn()
         )
+
+# 💬 MESAJ
+async def mesaj(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    # 🌍 HAVA
+    if context.user_data.get("mod") == "hava":
+
+        await hava_mesaj(update, context, API_KEY)
+
+        context.user_data["mod"] = None
+
+    # ⚖️ SEÇİM
+    elif context.user_data.get("mod") == "secim":
+
+        await secim_yap(update, context)
+
+        context.user_data["mod"] = None
 
 # 👑 ADMIN
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -496,8 +540,10 @@ app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("admin", admin))
 app.add_handler(CommandHandler("id", id))
+app.add_handler(CommandHandler("profil", profil))
 app.add_handler(CommandHandler("duyuru", duyuru))
 
 app.add_handler(CallbackQueryHandler(button))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mesaj))
 
 app.run_polling()
