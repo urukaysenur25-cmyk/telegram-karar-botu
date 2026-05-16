@@ -13,7 +13,9 @@ Bu bot, kullanıcıların günlük hayatta karar vermesine yardımcı olmak içi
 * ⭐ Favori yemek kaydetme sistemi
 * 🌍 Hava durumu sorgulama
 * 🎲 Sürpriz öneriler
-* 👑 Admin paneli (kullanıcı sayısı görüntüleme)
+* 👑 Admin paneli
+* 📢 Duyuru sistemi
+* 🧠 AI tavsiye sistemi
 
 ---
 
@@ -113,32 +115,32 @@ Bu proje eğitim amaçlı geliştirilmiştir.
 
 ---
 
-## 📸 Ekran Görüntüleri
+# 📸 Ekran Görüntüleri
 
-### 🏠 Ana Menü
+## 🏠 Ana Menü
 
-![Ana Menü](screenshots/menu.jpeg)
-
----
-
-### 🌍 Hava Durumu
-
-![Hava Durumu](screenshots/hava.jpeg)
+<img src="screenshots/menu.jpeg" width="250"/>
 
 ---
 
-### 🍔 Yemek Önerisi
+## 🌍 Hava Durumu
 
-![Yemek](screenshots/yemek.jpeg)
-
----
-
-### ⚖️ Seçim Sistemi
-
-![Seçim](screenshots/secim.jpeg)
+<img src="screenshots/hava.jpeg" width="250"/>
 
 ---
 
-### 👑 Admin Panel
+## 🍔 Yemek Önerisi
 
-![Admin](screenshots/admin.jpeg)
+<img src="screenshots/yemek.jpeg" width="250"/>
+
+---
+
+## ⚖️ Seçim Sistemi
+
+<img src="screenshots/secim.jpeg" width="250"/>
+
+---
+
+## 👑 Admin Panel
+
+<img src="screenshots/admin.jpeg" width="250"/>
