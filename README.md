@@ -81,11 +81,11 @@ telegram_bot/
 │   ├── users.json
 │
 ├── screenshots/
-│   ├── anamenu.jpeg
-│   ├── havadurumu.jpeg
-│   ├── yemek önerisi.jpeg
-│   ├── ikiseçenek arasında kaldım.jpeg
-│   ├── admin panel.jpeg
+│   ├── menu.jpeg
+│   ├── hava.jpeg
+│   ├── yemek.jpeg
+│   ├── secim.jpeg
+│   ├── admin.jpeg
 │
 ├── .env
 ├── .gitignore
@@ -117,28 +117,28 @@ Bu proje eğitim amaçlı geliştirilmiştir.
 
 ### 🏠 Ana Menü
 
-![Ana Menü](screenshots/anamenu.jpeg)
+![Ana Menü](screenshots/menu.jpeg)
 
 ---
 
 ### 🌍 Hava Durumu
 
-![Hava Durumu](screenshots/havadurumu.jpeg)
+![Hava Durumu](screenshots/hava.jpeg)
 
 ---
 
 ### 🍔 Yemek Önerisi
 
-![Yemek](screenshots/yemek önerisi.jpeg)
+![Yemek](screenshots/yemek.jpeg)
 
 ---
 
 ### ⚖️ Seçim Sistemi
 
-![Seçim](screenshots/ikiseçenek arasında kaldım.jpeg)
+![Seçim](screenshots/secim.jpeg)
 
 ---
 
 ### 👑 Admin Panel
 
-![Admin](screenshots/admin panel.jpeg)
+![Admin](screenshots/admin.jpeg)
